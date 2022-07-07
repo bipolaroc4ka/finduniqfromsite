@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<head>
+		<!-- OneTrust Cookies Consent Notice start -->
+				<!-- OneTrust Cookies Consent Notice end -->
+		
+		<title>hhru </title>
+		
+		 <style>
+        table{
+            border-collapse: collapse;
+            border-spacing: 0;
+        }
+        th, td{
+            padding: 10px 20px;
+            border: 1px solid #000;
+        }
+    </style>
+		
+		</head>
+		<body id="body"> 
+		
+		
+ <form >
+  <p><b>Вакансия</b></p>
+  <p><input type="text" placeholder = "Название" id = "name">
+  
+ </form>
+		
+		<button onclick='start("name")'> CLICK</button>
+		
+		<script>
+		
+		function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+};
+
+		async function start(name){
+		
+		 var vacancy1 = document.getElementById(name).value;
+		 var vacancy = vacancy1.replaceAll(' ', '+');
+		 console.log(vacancy);
+		 
+		url = 'https://api.hh.ru/vacancies?clusters=true&enable_snippets=true&st=searchVacancy&text='+vacancy;
+		
+		
+		
+		
+		let response = await fetch(url);
+
+let table = document.createElement('table');
+let thead = document.createElement('thead');
+let tbody = document.createElement('tbody');
+
+table.appendChild(thead);
+table.appendChild(tbody);
+
+// Adding the entire table to the body tag
+document.getElementById('body').appendChild(table);
+
+
+let row_1 = document.createElement('tr');
+let heading_1 = document.createElement('th');
+heading_1.innerHTML = "Список";
+
+row_1.appendChild(heading_1);
+thead.appendChild(row_1);
+
+
+
+if (response.ok) { // если HTTP-статус в диапазоне 200-299
+  // получаем тело ответа (см. про этот метод ниже)
+  let json = await response.json();
+	
+	console.log(json.found + " всего вакансий");
+	
+	
+	dictionary1 = new Set();
+	
+	
+	/*for(i=0;i<json.items.length;i++){
+	console.log(json['items'][i]['name']);
+	console.log(json['items'][i]['employer']['name']);
+
+	};*/
+	
+	//console.log(json['items'][0]['name']);
+	//console.log(json['items'][0]['alternate_url']);
+	
+	
+	
+	
+	var quantity = (json.found/100)+1;
+	var pageNumber = 0;
+	
+	
+	
+	dictionary = new Set();
+	
+	
+	
+	while (pageNumber<=quantity)
+	{
+	yri = 'https://api.hh.ru/vacancies?clusters=true&enable_snippets=true&st=searchVacancy&text='+vacancy+'&page='+pageNumber;
+		var response1 = await fetch(yri);
+		let json1 = await response1.json();
+		
+		
+		
+		
+		for(i=0;i<json1.items.length;i++){
+		//dictionary.add(json1['items'][i]['name']+" " +json1['items'][i]['employer']['name']);	
+		dictionary.add("Вакансия: " + json1['items'][i]['name'] + ", Компания: " +json1['items'][i]['employer']['name']);	
+
+
+		//console.log(json1['items']);		
+		}
+		
+		
+		
+		
+		
+		//console.log(json1['items']);
+		pageNumber++;
+		sleep(1000);
+	
+	
+	};
+  console.log(dictionary.size);
+  
+  for(let item of dictionary){
+  
+  
+  let row_2 = document.createElement('tr');
+let row_2_data_1 = document.createElement('td');
+row_2_data_1.innerHTML = item;
+row_2.appendChild(row_2_data_1);
+tbody.appendChild(row_2);
+  }
+  
+  
+  
+} else {
+  alert("Ошибка HTTP: " + response.status);
+};
+
+};
+		
+		</script>
+		
+		
+		</body>
+</html>
